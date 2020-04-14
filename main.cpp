@@ -72,5 +72,7 @@ void print(int k)
     for (int i = 0; i < 7; i++)
         cout << SUPrice[i] << ' ';
     cout << endl;
+    cout << "McAfee PUPrice: " << PUPriceMcAfee << endl;
+    cout << "McAfee SUPrice: " << SUPriceMcAfee << endl;
     cout << "----------------------------------------" << endl;
 }

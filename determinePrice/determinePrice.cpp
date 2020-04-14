@@ -12,10 +12,15 @@ extern double Weight[100][100];
 double PUPrice[5] = {0};
 double SUPrice[7] = {0};
 
+double PUPriceMcAfee;
+double SUPriceMcAfee;
+
 void determinePrice(int k)
 {
-    double Bks = SUBids[k];
-    double Bkb = PUBids[k];
+    double Bks = PUBids[k];
+    double Bkb = SUBids[k];
+    PUPriceMcAfee = Bks;
+    SUPriceMcAfee = Bkb;
     for (int i = 0; i < k; i++)
     {
         int SUindex = i;

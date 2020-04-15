@@ -54,7 +54,11 @@ void genRandPUcompareMatrixs(MatrixXd &PUcompareMatrix, int numOfSpectrums)
         }
 }
 
+<<<<<<< HEAD
 void InitMatrixs(vector<MatrixXd> &compareMatrixs, vector<vector<MatrixXd>> &PUcompareMatrixs, int k, int numOfAttributes, int numOfSpectrums)
+=======
+void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<vector<MatrixSpec>> &PUcompareMatrixs, int k)
+>>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
 {
     for (int i = 0; i < k; i++)
     {
@@ -65,17 +69,26 @@ void InitMatrixs(vector<MatrixXd> &compareMatrixs, vector<vector<MatrixXd>> &PUc
 
     for (int i = 0; i < k; i++)
     {
+<<<<<<< HEAD
         vector<MatrixXd> ithPUcompareMatrixs;
         for (int j = 0; j < numOfAttributes; j++)
         {
             MatrixXd PUcompareMatrix(numOfSpectrums, numOfSpectrums);
             genRandPUcompareMatrixs(PUcompareMatrix, numOfSpectrums);
+=======
+        vector<MatrixSpec> ithPUcompareMatrixs;
+        for (int j = 0; j < numOfAttributes; j++)
+        {
+            MatrixSpec PUcompareMatrix;
+            genRandPUcompareMatrixs(PUcompareMatrix);
+>>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
             ithPUcompareMatrixs.push_back(PUcompareMatrix);
         }
         PUcompareMatrixs.push_back(ithPUcompareMatrixs);
     }
 }
 
+<<<<<<< HEAD
 void swap(int &a, int &b)
 {
     int c = a;
@@ -95,6 +108,12 @@ void matching(int k, vector<MatrixXd> &compareMatrixs, vector<vector<MatrixXd>> 
     InitMatrixs(compareMatrixs, PUcompareMatrixs, k, numOfAttributes, numOfSpectrums);
 
     // 计算偏好值并构建二分图
+=======
+void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<vector<MatrixSpec>> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums, vector<double> &weightVec)
+{
+    InitMatrixs(compareMatrixs, PUcompareMatrixs, k);
+    // 计算偏好值
+>>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
     for (int i = 0; i < k; i++)
     {
         vector<double> weightVec;   // 权向量

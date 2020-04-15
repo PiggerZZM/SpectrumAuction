@@ -45,7 +45,11 @@ void calWeightVec1(MatrixXd compareMatrix, VectorXd &NweightVec, double &NmaxEig
         NmaxEigenValue += (temp(i, 0) / NweightVec(i, 0) / numOfAttributes);
 }
 
+<<<<<<< HEAD
 void calWeightVec2(vector<MatrixXd> PUcompareMatrixs, VectorXd MweightVecs[], double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
+=======
+void calWeightVec2(vector<MatrixSpec> PUcompareMatrixs, VectorMf MweightVecs[], double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
+>>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
 {
     // 计算第3层对第2层的权向量
     double jColSum;
@@ -130,7 +134,11 @@ void calCombineWeightVec(VectorXd NweightVec, VectorXd MweightVecs[], int numOfS
         weightVec.push_back(combineWeightVec(i, 0));
 }
 
+<<<<<<< HEAD
 bool AHP(int numOfSpectrums, int numOfAttributes, MatrixXd compareMatrix, vector<MatrixXd> PUcompareMatrixs, vector<double> &weightVec)
+=======
+bool AHP(int numOfSpectrums, int numOfAttributes, MatrixAttr compareMatrix, vector<MatrixSpec> PUcompareMatrixs, vector<double> &weightVec)
+>>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
 {
     VectorXd NweightVec(numOfAttributes);
     double NmaxEigenValue = 0;

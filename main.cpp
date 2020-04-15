@@ -62,7 +62,7 @@ void print(int k)
         cout << endl;
     }
     cout << "----------------------------------------" << endl;
-    
+
     cout << "Price: " << endl;
     cout << "PUPrice: ";
     for (int i = 0; i < 5; i++)
@@ -74,5 +74,16 @@ void print(int k)
     cout << endl;
     cout << "McAfee PUPrice: " << PUPriceMcAfee << endl;
     cout << "McAfee SUPrice: " << SUPriceMcAfee << endl;
+    cout << "----------------------------------------" << endl;
+
+    double prefSum = 0;
+    double randomPrefSum = 0;
+    for (int i = 0; i < k; i++)
+    {
+        prefSum += Weight[i + 1][match[i + 1]];
+        randomPrefSum += Weight[i + 1][randomMatch[i] + 1];
+    }
+    cout << "Total preference value: " << prefSum << endl;
+    cout << "Total preference value with a random matching: " << randomPrefSum << endl;
     cout << "----------------------------------------" << endl;
 }

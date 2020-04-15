@@ -5,9 +5,13 @@
 #include <cstdlib>
 #include "../AHP/AHP.cpp"
 #include "../Kuhn-Munkres/KM.cpp"
+using namespace std;
 
+extern const int maxn;
 extern double Weight[100][100];
 double compare[17] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1.0 / 2, 1.0 / 3, 1.0 / 4, 1.0 / 5, 1.0 / 6, 1.0 / 7, 1.0 / 8, 1.0 / 9};
+int randomMatch[maxn];
+
 double randPick()
 {
     return compare[rand() % 17];
@@ -71,8 +75,22 @@ void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcom
     }
 }
 
+void swap(int &a, int &b)
+{
+    int c = a;
+    a = b;
+    b = c;
+}
+
+void Knuth_Shuffle(int randomMatch[], int n)
+{
+    for (int i = n - 1; i >= 0; i--)
+        swap(randomMatch[i], randomMatch[rand() % (i + 1)]);
+}
+
 void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums, vector<double> &weightVec)
 {
+
     InitMatrixs(compareMatrixs, PUcompareMatrixs, k);
 
     // 计算偏好值
@@ -86,6 +104,11 @@ void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &P
 
     // 最大权匹配
     KM(k);
+
+    // 随机匹配
+    for (int i = 0; i < k; i++)
+        randomMatch[i] = i;
+    Knuth_Shuffle(randomMatch, k);
 }
 
 #endif

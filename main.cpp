@@ -15,15 +15,9 @@ int main()
 {
     void print(int numOfSpectrums, int numOfPUs, int numOfSUs);
     srand(int(time(0)));
-<<<<<<< HEAD
     vector<MatrixXd> compareMatrixs;
     vector<vector<MatrixXd>> PUcompareMatrixs;
     const int numOfAttributes = 4;  // 论文中的例子是4个频谱属性，这里可以根据需要进行改动
-=======
-    vector<MatrixAttr> compareMatrixs;
-    vector<vector<MatrixSpec>> PUcompareMatrixs;
-    vector<double> weightVec;
->>>>>>> 42b479cd5b0ce2d30d12c478216bb7c08f51d1b4
 
     // 确立获胜者
     int k = determineWinners(5, 7, PUBids, SUBids);

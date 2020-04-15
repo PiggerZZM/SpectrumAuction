@@ -49,7 +49,7 @@ void genRandPUcompareMatrixs(MatrixSpec &PUcompareMatrix)
         }
 }
 
-void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcompareMatrixs, int k)
+void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<vector<MatrixSpec>> &PUcompareMatrixs, int k)
 {
     for (int i = 0; i < k; i++)
     {
@@ -60,21 +60,20 @@ void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcom
 
     for (int i = 0; i < k; i++)
     {
-        MatrixSpec ithPUcompareMatrixs[numOfAttributes];
+        vector<MatrixSpec> ithPUcompareMatrixs;
         for (int j = 0; j < numOfAttributes; j++)
         {
             MatrixSpec PUcompareMatrix;
             genRandPUcompareMatrixs(PUcompareMatrix);
-            ithPUcompareMatrixs[j] = PUcompareMatrix;
+            ithPUcompareMatrixs.push_back(PUcompareMatrix);
         }
         PUcompareMatrixs.push_back(ithPUcompareMatrixs);
     }
 }
 
-void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums, vector<double> &weightVec)
+void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<vector<MatrixSpec>> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums, vector<double> &weightVec)
 {
     InitMatrixs(compareMatrixs, PUcompareMatrixs, k);
-
     // 计算偏好值
     for (int i = 0; i < k; i++)
     {

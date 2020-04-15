@@ -14,7 +14,7 @@ int main()
     void print(int k);
     srand(int(time(0)));
     vector<MatrixAttr> compareMatrixs;
-    vector<MatrixSpec *> PUcompareMatrixs;
+    vector<vector<MatrixSpec>> PUcompareMatrixs;
     vector<double> weightVec;
 
     // 确立获胜者

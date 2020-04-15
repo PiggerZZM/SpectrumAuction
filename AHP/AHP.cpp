@@ -7,22 +7,13 @@
 using namespace std;
 using namespace Eigen;
 
-const int numOfSpectrums = 3;
-const int numOfAttributes = 4;
 const double RI[] = {0, 0, 0, 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49, 1.51}; // 随机一致性指标
 double CR3, CI3, CR2, CI2, RI3, CR;                                                  // 一致性指标
 
-typedef Matrix<double, numOfAttributes, numOfAttributes> MatrixAttr;
-typedef Matrix<double, numOfSpectrums, numOfSpectrums> MatrixSpec;
-typedef Matrix<double, numOfAttributes, 1> VectorNf;
-typedef Matrix<double, numOfSpectrums, 1> VectorMf;
-typedef Matrix<double, numOfSpectrums, numOfAttributes> MatrixSA;
-
-
-void calWeightVec1(MatrixAttr compareMatrix, VectorNf &NweightVec, double &NmaxEigenValue, int numOfSpectrums, int numOfAttributes)
+void calWeightVec1(MatrixXd compareMatrix, VectorXd &NweightVec, double &NmaxEigenValue, int numOfSpectrums, int numOfAttributes)
 {
     // 计算第2层对第1层的权向量
-    MatrixAttr tempMatrix = compareMatrix;
+    MatrixXd tempMatrix = compareMatrix;
     // 计算近似特征向量
     // 列向量归一化
     double jColSum;
@@ -49,19 +40,19 @@ void calWeightVec1(MatrixAttr compareMatrix, VectorNf &NweightVec, double &NmaxE
         NweightVec(i, 0) /= colSum;
 
     // 计算近似最大特征值
-    VectorNf temp = compareMatrix * NweightVec;
+    VectorXd temp = compareMatrix * NweightVec;
     for (int i = 0; i < numOfAttributes; i++)
         NmaxEigenValue += (temp(i, 0) / NweightVec(i, 0) / numOfAttributes);
 }
 
-void calWeightVec2(MatrixSpec PUcompareMatrixs[], VectorMf MweightVecs[], double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
+void calWeightVec2(vector<MatrixXd> PUcompareMatrixs, VectorXd MweightVecs[], double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
 {
     // 计算第3层对第2层的权向量
     double jColSum;
     double colSum;
     for (int index = 0; index < numOfAttributes; index++)
     {
-        MatrixSpec tempMatrix = PUcompareMatrixs[index];
+        MatrixXd tempMatrix = PUcompareMatrixs[index];
         // 计算近似特征向量
         // 列向量归一化
         for (int j = 0; j < numOfSpectrums; j++)
@@ -79,7 +70,7 @@ void calWeightVec2(MatrixSpec PUcompareMatrixs[], VectorMf MweightVecs[], double
             for (int j = 0; j < numOfSpectrums; j++)
                 MweightVecs[index](i, 0) += tempMatrix(i, j);
         }
-            
+
         // 归一化
         colSum = 0;
         for (int i = 0; i < numOfSpectrums; i++)
@@ -88,13 +79,13 @@ void calWeightVec2(MatrixSpec PUcompareMatrixs[], VectorMf MweightVecs[], double
             MweightVecs[index](i, 0) /= colSum;
 
         // 计算近似最大特征值
-        VectorMf temp = PUcompareMatrixs[index] * MweightVecs[index];
+        VectorXd temp = PUcompareMatrixs[index] * MweightVecs[index];
         for (int i = 0; i < numOfSpectrums; i++)
             MmaxEigenValues[index] += (temp(i, 0) / MweightVecs[index](i, 0) / numOfSpectrums);
     }
 }
 
-bool consistenceTest(VectorNf NweightVec, double NmaxEigenValue, int numOfSpectrums, int numOfAttributes)
+bool consistenceTest(VectorXd NweightVec, double NmaxEigenValue, int numOfSpectrums, int numOfAttributes)
 {
     // 一致性检验
     CI2 = (NmaxEigenValue - numOfAttributes) / (numOfAttributes - 1);
@@ -108,7 +99,7 @@ bool consistenceTest(VectorNf NweightVec, double NmaxEigenValue, int numOfSpectr
         return true;
 }
 
-bool combineConsistenceTest(VectorNf NweightVec, double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
+bool combineConsistenceTest(VectorXd NweightVec, double MmaxEigenValues[], int numOfSpectrums, int numOfAttributes)
 {
     // 组合一致性检验
     CI3 = 0, RI3 = 0;
@@ -129,19 +120,19 @@ bool combineConsistenceTest(VectorNf NweightVec, double MmaxEigenValues[], int n
         return true;
 }
 
-void calCombineWeightVec(VectorNf NweightVec, VectorMf MweightVecs[], int numOfSpectrums, int numOfAttributes, vector<double> &weightVec)
+void calCombineWeightVec(VectorXd NweightVec, VectorXd MweightVecs[], int numOfSpectrums, int numOfAttributes, vector<double> &weightVec)
 {
     // 计算第3层对第1层的组合权向量
-    MatrixSA W;
+    MatrixXd W(numOfSpectrums, numOfAttributes);
     W << MweightVecs[0], MweightVecs[1], MweightVecs[2], MweightVecs[3];
-    VectorMf combineWeightVec = W * NweightVec;
+    VectorXd combineWeightVec = W * NweightVec;
     for (int i = 0; i < numOfSpectrums; i++)
         weightVec.push_back(combineWeightVec(i, 0));
 }
 
-bool AHP(int numOfSpectrums, int numOfAttributes, MatrixAttr compareMatrix, MatrixSpec PUcompareMatrixs[], vector<double> &weightVec)
+bool AHP(int numOfSpectrums, int numOfAttributes, MatrixXd compareMatrix, vector<MatrixXd> PUcompareMatrixs, vector<double> &weightVec)
 {
-    VectorNf NweightVec;
+    VectorXd NweightVec(numOfAttributes);
     double NmaxEigenValue = 0;
     // 计算第2层对第1层的权向量
     calWeightVec1(compareMatrix, NweightVec, NmaxEigenValue, numOfSpectrums, numOfAttributes);
@@ -151,7 +142,9 @@ bool AHP(int numOfSpectrums, int numOfAttributes, MatrixAttr compareMatrix, Matr
         return false;
 
     // 计算第3层对第2层的权向量
-    VectorMf MweightVecs[numOfAttributes];
+    VectorXd MweightVecs[numOfAttributes];
+    for (int i = 0; i < numOfAttributes; i++)
+        MweightVecs[i].resize(numOfSpectrums);
     double MmaxEigenValues[numOfAttributes];
     for (int i = 0; i < numOfAttributes; i++)
         MmaxEigenValues[i] = 0;

@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include "../AHP/AHP.cpp"
 #include "../Kuhn-Munkres/KM.cpp"
+#include "../reuse/reuse.cpp"
 using namespace std;
 
 extern const int maxn;
@@ -17,7 +18,7 @@ double randPick()
     return compare[rand() % 17];
 }
 
-void genRandcompareMatrix(MatrixAttr &compareMatrix)
+void genRandcompareMatrix(MatrixXd &compareMatrix, int numOfAttributes)
 {
     for (int x = 0; x < numOfAttributes; x++)
         compareMatrix(x, x) = 1;
@@ -35,7 +36,7 @@ void genRandcompareMatrix(MatrixAttr &compareMatrix)
         }
 }
 
-void genRandPUcompareMatrixs(MatrixSpec &PUcompareMatrix)
+void genRandPUcompareMatrixs(MatrixXd &PUcompareMatrix, int numOfSpectrums)
 {
     for (int x = 0; x < numOfSpectrums; x++)
         PUcompareMatrix(x, x) = 1;
@@ -53,23 +54,23 @@ void genRandPUcompareMatrixs(MatrixSpec &PUcompareMatrix)
         }
 }
 
-void InitMatrixs(vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcompareMatrixs, int k)
+void InitMatrixs(vector<MatrixXd> &compareMatrixs, vector<vector<MatrixXd>> &PUcompareMatrixs, int k, int numOfAttributes, int numOfSpectrums)
 {
     for (int i = 0; i < k; i++)
     {
-        MatrixAttr compareMatrix;
-        genRandcompareMatrix(compareMatrix);
+        MatrixXd compareMatrix(numOfAttributes, numOfAttributes);
+        genRandcompareMatrix(compareMatrix, numOfAttributes);
         compareMatrixs.push_back(compareMatrix);
     }
 
     for (int i = 0; i < k; i++)
     {
-        MatrixSpec ithPUcompareMatrixs[numOfAttributes];
+        vector<MatrixXd> ithPUcompareMatrixs;
         for (int j = 0; j < numOfAttributes; j++)
         {
-            MatrixSpec PUcompareMatrix;
-            genRandPUcompareMatrixs(PUcompareMatrix);
-            ithPUcompareMatrixs[j] = PUcompareMatrix;
+            MatrixXd PUcompareMatrix(numOfSpectrums, numOfSpectrums);
+            genRandPUcompareMatrixs(PUcompareMatrix, numOfSpectrums);
+            ithPUcompareMatrixs.push_back(PUcompareMatrix);
         }
         PUcompareMatrixs.push_back(ithPUcompareMatrixs);
     }
@@ -88,14 +89,15 @@ void Knuth_Shuffle(int randomMatch[], int n)
         swap(randomMatch[i], randomMatch[rand() % (i + 1)]);
 }
 
-void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums, vector<double> &weightVec)
+void matching(int k, vector<MatrixXd> &compareMatrixs, vector<vector<MatrixXd>> &PUcompareMatrixs, int numOfAttributes, int numOfSpectrums)
 {
+    // 生成成对比较矩阵
+    InitMatrixs(compareMatrixs, PUcompareMatrixs, k, numOfAttributes, numOfSpectrums);
 
-    InitMatrixs(compareMatrixs, PUcompareMatrixs, k);
-
-    // 计算偏好值
+    // 计算偏好值并构建二分图
     for (int i = 0; i < k; i++)
     {
+        vector<double> weightVec;   // 权向量
         weightVec.clear();
         if (AHP(numOfSpectrums, numOfAttributes, compareMatrixs[i], PUcompareMatrixs[i], weightVec))
             for (int j = 0; j < k; j++)
@@ -104,6 +106,9 @@ void matching(int k, vector<MatrixAttr> &compareMatrixs, vector<MatrixSpec *> &P
 
     // 最大权匹配
     KM(k);
+
+    // 时空信道复用
+    reuse(k - 1);
 
     // 随机匹配
     for (int i = 0; i < k; i++)

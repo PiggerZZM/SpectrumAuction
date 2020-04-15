@@ -5,59 +5,60 @@
 #include "determineWinners/determineWinners.cpp"
 #include "determinePrice/determinePrice.cpp"
 #include "matching/matching.cpp"
-#include "reuse/reuse.cpp"
 
 using namespace std;
 
+double PUBids[5] = {2.1, 9.8, 5.2, 1.0, 4.5};
+double SUBids[7] = {7.1, 2.3, 9.9, 1.2, 5.8, 3.4, 6.5};
+
 int main()
 {
-    void print(int k);
+    void print(int numOfSpectrums, int numOfPUs, int numOfSUs);
     srand(int(time(0)));
-    vector<MatrixAttr> compareMatrixs;
-    vector<MatrixSpec *> PUcompareMatrixs;
-    vector<double> weightVec;
+    vector<MatrixXd> compareMatrixs;
+    vector<vector<MatrixXd>> PUcompareMatrixs;
+    const int numOfAttributes = 4;  // 论文中的例子是4个频谱属性，这里可以根据需要进行改动
 
     // 确立获胜者
     int k = determineWinners(5, 7, PUBids, SUBids);
+    int numOfSpectrums = k - 1;
 
     // 基于偏好值的交易匹配
-    matching(k - 1, compareMatrixs, PUcompareMatrixs, numOfAttributes, numOfSpectrums, weightVec);
-
-    // 时空信道复用
-    reuse(k - 1);
+    matching(numOfSpectrums, compareMatrixs, PUcompareMatrixs, numOfAttributes, numOfSpectrums);
 
     // 基于偏好值的差别定价
-    determinePrice(k - 1);
+    determinePrice(numOfSpectrums);
 
-    print(k - 1);
+    // 输出结果
+    print(numOfSpectrums, 5, 7);
 
     return 0;
 }
 
-void print(int k)
+void print(int numOfSpectrums, int numOfPUs, int numOfSUs)
 {
     cout << "----------------------------------------" << endl;
     cout << "Bids:" << endl;
     cout << "PUBids: ";
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < numOfPUs; i++)
         cout << PUBids[i] << ' ';
     cout << endl;
     cout << "SUBids: ";
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < numOfSUs; i++)
         cout << SUBids[i] << ' ';
     cout << endl;
     cout << "----------------------------------------" << endl;
 
     cout << "Matching: " << endl;
     cout << "SUs - PUs" << endl;
-    for (int i = 1; i <= k; i++)
+    for (int i = 1; i <= numOfSpectrums; i++)
         cout << i << " - " << match[i] << endl;
     cout << "----------------------------------------" << endl;
 
     cout << "Weight matrix:" << endl;
-    for (int i = 1; i <= k; i++)
+    for (int i = 1; i <= numOfSpectrums; i++)
     {
-        for (int j = 1; j <= k; j++)
+        for (int j = 1; j <= numOfSpectrums; j++)
             cout << Weight[i][j] << " ";
         cout << endl;
     }
@@ -65,11 +66,11 @@ void print(int k)
 
     cout << "Price: " << endl;
     cout << "PUPrice: ";
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < numOfPUs; i++)
         cout << PUPrice[i] << ' ';
     cout << endl;
     cout << "SUPrice: ";
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < numOfSUs; i++)
         cout << SUPrice[i] << ' ';
     cout << endl;
     cout << "McAfee PUPrice: " << PUPriceMcAfee << endl;
@@ -78,7 +79,7 @@ void print(int k)
 
     double prefSum = 0;
     double randomPrefSum = 0;
-    for (int i = 0; i < k; i++)
+    for (int i = 0; i < numOfSpectrums; i++)
     {
         prefSum += Weight[i + 1][match[i + 1]];
         randomPrefSum += Weight[i + 1][randomMatch[i] + 1];

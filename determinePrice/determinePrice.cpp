@@ -3,19 +3,14 @@
 
 #include "../Kuhn-Munkres/KM.cpp"
 
-extern double PUBids[5];
-extern double SUBids[7];
 extern const int maxn;
 extern int match[maxn];
 extern double Weight[100][100];
 
-double PUPrice[5] = {0};
-double SUPrice[7] = {0};
-
 double PUPriceMcAfee;
 double SUPriceMcAfee;
 
-void determinePrice(int k)
+void determinePrice(int k, double PUBids[], double SUBids[], double PUPrice[], double SUPrice[])
 {
     double Bks = PUBids[k];
     double Bkb = SUBids[k];

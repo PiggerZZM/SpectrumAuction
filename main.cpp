@@ -8,34 +8,43 @@
 
 using namespace std;
 
-double PUBids[5] = {2.1, 9.8, 5.2, 1.0, 4.5};
-double SUBids[7] = {7.1, 2.3, 9.9, 1.2, 5.8, 3.4, 6.5};
-
 int main()
 {
-    void print(int numOfSpectrums, int numOfPUs, int numOfSUs);
+    void print(int numOfSpectrums, int numOfPUs, int numOfSUs, double PUBids[], double SUBids[], double PUPrice[], double SUPrice[]);
     srand(int(time(0)));
     vector<MatrixXd> compareMatrixs;
     vector<vector<MatrixXd>> PUcompareMatrixs;
-    const int numOfAttributes = 4;  // 论文中的例子是4个频谱属性，这里可以根据需要进行改动
+    // 论文中的例子使用4个频谱属性，5名PU7名SU
+    const int numOfAttributes = 4;
+    const int numOfPUs = 5;
+    const int numOfSUs = 7;
+
+    double PUBids[numOfPUs] = {2.1, 9.8, 5.2, 1.0, 4.5};
+    double SUBids[numOfSUs] = {7.1, 2.3, 9.9, 1.2, 5.8, 3.4, 6.5};
+    double PUPrice[numOfPUs];
+    double SUPrice[numOfSUs];
+    for (int i = 0; i < numOfPUs; i++)
+        PUPrice[i] = 0;
+    for (int i = 0; i < numOfSUs; i++)
+        SUPrice[i] = 0;
 
     // 确立获胜者
-    int k = determineWinners(5, 7, PUBids, SUBids);
+    int k = determineWinners(numOfPUs, numOfSUs, PUBids, SUBids);
     int numOfSpectrums = k - 1;
 
     // 基于偏好值的交易匹配
     matching(numOfSpectrums, compareMatrixs, PUcompareMatrixs, numOfAttributes, numOfSpectrums);
 
     // 基于偏好值的差别定价
-    determinePrice(numOfSpectrums);
+    determinePrice(numOfSpectrums, PUBids, SUBids, PUPrice, SUPrice);
 
     // 输出结果
-    print(numOfSpectrums, 5, 7);
+    print(numOfSpectrums, numOfPUs, numOfSUs, PUBids, SUBids, PUPrice, SUPrice);
 
     return 0;
 }
 
-void print(int numOfSpectrums, int numOfPUs, int numOfSUs)
+void print(int numOfSpectrums, int numOfPUs, int numOfSUs, double PUBids[], double SUBids[], double PUPrice[], double SUPrice[])
 {
     cout << "----------------------------------------" << endl;
     cout << "Bids:" << endl;

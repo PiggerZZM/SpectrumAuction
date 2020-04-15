@@ -59,6 +59,7 @@
         "string_view": "cpp",
         "tuple": "cpp",
         "fstream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "dense": "cpp"
     }
 }

@@ -1,5 +1,6 @@
 #include <ctime>
 #include <iostream>
+#include <cstdlib>
 #include "AHP/AHP.cpp"
 #include "Kuhn-Munkres/KM.cpp"
 #include "determineWinners/determineWinners.cpp"
@@ -19,14 +20,20 @@ int main()
     const int numOfPUs = 5;
     const int numOfSUs = 7;
 
-    double PUBids[numOfPUs] = {2.1, 9.8, 5.2, 1.0, 4.5};
-    double SUBids[numOfSUs] = {7.1, 2.3, 9.9, 1.2, 5.8, 3.4, 6.5};
+    double PUBids[numOfPUs];
+    double SUBids[numOfSUs];
     double PUPrice[numOfPUs];
     double SUPrice[numOfSUs];
     for (int i = 0; i < numOfPUs; i++)
+    {
+        PUBids[i] = rand() % 100 + 1;
         PUPrice[i] = 0;
+    }
     for (int i = 0; i < numOfSUs; i++)
+    {
+        SUBids[i] = rand() % 100 + 1;
         SUPrice[i] = 0;
+    }
 
     // 确立获胜者
     int k = determineWinners(numOfPUs, numOfSUs, PUBids, SUBids);

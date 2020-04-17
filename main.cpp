@@ -9,21 +9,8 @@
 
 using namespace std;
 
-int main()
+void init(double PUBids[], double SUBids[], double PUPrice[], double SUPrice[], int numOfPUs, int numOfSUs)
 {
-    void print(int numOfSpectrums, int numOfPUs, int numOfSUs, double PUBids[], double SUBids[], double PUPrice[], double SUPrice[]);
-    srand(int(time(0)));
-    vector<MatrixXd> compareMatrixs;
-    vector<vector<MatrixXd>> PUcompareMatrixs;
-    // 论文中的例子使用4个频谱属性，5名PU7名SU
-    const int numOfAttributes = 4;
-    const int numOfPUs = 5;
-    const int numOfSUs = 7;
-
-    double PUBids[numOfPUs];
-    double SUBids[numOfSUs];
-    double PUPrice[numOfPUs];
-    double SUPrice[numOfSUs];
     for (int i = 0; i < numOfPUs; i++)
     {
         PUBids[i] = rand() % 100 + 1;
@@ -34,21 +21,6 @@ int main()
         SUBids[i] = rand() % 100 + 1;
         SUPrice[i] = 0;
     }
-
-    // 确立获胜者
-    int k = determineWinners(numOfPUs, numOfSUs, PUBids, SUBids);
-    int numOfSpectrums = k - 1;
-
-    // 基于偏好值的交易匹配
-    matching(numOfSpectrums, compareMatrixs, PUcompareMatrixs, numOfAttributes, numOfSpectrums);
-
-    // 基于偏好值的差别定价
-    determinePrice(numOfSpectrums, PUBids, SUBids, PUPrice, SUPrice);
-
-    // 输出结果
-    print(numOfSpectrums, numOfPUs, numOfSUs, PUBids, SUBids, PUPrice, SUPrice);
-
-    return 0;
 }
 
 void print(int numOfSpectrums, int numOfPUs, int numOfSUs, double PUBids[], double SUBids[], double PUPrice[], double SUPrice[])
@@ -103,4 +75,37 @@ void print(int numOfSpectrums, int numOfPUs, int numOfSUs, double PUBids[], doub
     cout << "Total preference value: " << prefSum << endl;
     cout << "Total preference value with a random matching: " << randomPrefSum << endl;
     cout << "----------------------------------------" << endl;
+}
+
+int main()
+{
+    srand(int(time(0)));
+    vector<MatrixXd> compareMatrixs;
+    vector<vector<MatrixXd>> PUcompareMatrixs;
+
+    const int numOfAttributes = 4;
+    const int numOfPUs = 5;
+    const int numOfSUs = 7;
+
+    double PUBids[numOfPUs];
+    double SUBids[numOfSUs];
+    double PUPrice[numOfPUs];
+    double SUPrice[numOfSUs];
+
+    init(PUBids, SUBids, PUPrice, SUPrice, 5, 7);
+
+    // 确立获胜者
+    int k = determineWinners(numOfPUs, numOfSUs, PUBids, SUBids);
+    int numOfSpectrums = k - 1;
+
+    // 基于偏好值的交易匹配
+    matching(numOfSpectrums, compareMatrixs, PUcompareMatrixs, numOfAttributes, numOfSpectrums);
+
+    // 基于偏好值的差别定价
+    determinePrice(numOfSpectrums, PUBids, SUBids, PUPrice, SUPrice);
+
+    // 输出结果
+    print(numOfSpectrums, numOfPUs, numOfSUs, PUBids, SUBids, PUPrice, SUPrice);
+
+    return 0;
 }

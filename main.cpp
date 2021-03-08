@@ -83,16 +83,16 @@ int main()
     vector<MatrixXd> compareMatrixs;
     vector<vector<MatrixXd>> PUcompareMatrixs;
 
-    const int numOfAttributes = 4;
-    const int numOfPUs = 5;
-    const int numOfSUs = 7;
+    const int numOfAttributes = 100;
+    const int numOfPUs = 10;
+    const int numOfSUs = 20;
 
     double PUBids[numOfPUs];
     double SUBids[numOfSUs];
     double PUPrice[numOfPUs];
     double SUPrice[numOfSUs];
 
-    init(PUBids, SUBids, PUPrice, SUPrice, 5, 7);
+    init(PUBids, SUBids, PUPrice, SUPrice, numOfPUs, numOfSUs);
 
     // 确立获胜者
     int k = determineWinners(numOfPUs, numOfSUs, PUBids, SUBids);

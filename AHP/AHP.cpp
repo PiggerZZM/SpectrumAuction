@@ -124,7 +124,9 @@ void calCombineWeightVec(VectorXd NweightVec, VectorXd MweightVecs[], int numOfS
 {
     // 计算第3层对第1层的组合权向量
     MatrixXd W(numOfSpectrums, numOfAttributes);
-    W << MweightVecs[0], MweightVecs[1], MweightVecs[2], MweightVecs[3];
+    for (int c = 0; c < numOfAttributes; c++)
+        for (int r = 0; r < numOfSpectrums; r++)
+            W(r, c) = MweightVecs[c](r);
     VectorXd combineWeightVec = W * NweightVec;
     for (int i = 0; i < numOfSpectrums; i++)
         weightVec.push_back(combineWeightVec(i, 0));

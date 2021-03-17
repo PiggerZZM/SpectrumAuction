@@ -140,8 +140,8 @@ bool AHP(int numOfSpectrums, int numOfAttributes, MatrixXd compareMatrix, vector
     calWeightVec1(compareMatrix, NweightVec, NmaxEigenValue, numOfSpectrums, numOfAttributes);
 
     // 第2层一致性检验
-    if (!consistenceTest(NweightVec, NmaxEigenValue, numOfSpectrums, numOfAttributes))
-        return false;
+    // if (!consistenceTest(NweightVec, NmaxEigenValue, numOfSpectrums, numOfAttributes))
+    //     return false;
 
     // 计算第3层对第2层的权向量
     VectorXd MweightVecs[numOfAttributes];
